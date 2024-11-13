@@ -110,14 +110,36 @@ class GrammarConstrainedLogitsProcessor(LogitsProcessor):
         )
         # logger.debug("stacks: \n" + pprint.pformat(self.batch_parsing_states.stacks))
 
+
         self.batch_parsing_states = (
             self.grammar_constraint.update_state_with_batch_token_seqs(
                 input_ids, self.batch_parsing_states, self.valid_token_start_idx
             )
         )
+
         logger.debug(f"input_ids: {input_ids}")
+        #print(self.grammar_constraint.tokenizer.batch_decode(input_ids, skip_special_tokens=True))
+
+        #print(input_ids)
+        
+        #print([s.partial_utf8 for s in self.batch_parsing_states])
+
+        top_k_scores, top_k_ids = torch.topk(scores, 10, dim=-1)
+        #print(top_k_ids)
+        #quit()
+        #print(self.grammar_constraint.tokenizer.batch_decode(scores, skip_special_tokens=True))
+
+        #print("___")
 
         masked_scores = self.mask_logits(scores, device)
+
+        
+        #print(top_k_ids)
+        #quit()
+        
+
+        masked_scores = check_negative_constraint_str(input_ids, masked_scores, self.grammar_constraint.tokenizer)
+
         return masked_scores
 
     @add_start_docstrings(LOGITS_PROCESSOR_INPUTS_DOCSTRING)
@@ -125,6 +147,86 @@ class GrammarConstrainedLogitsProcessor(LogitsProcessor):
         self, input_ids: torch.LongTensor, scores: torch.FloatTensor
     ) -> torch.FloatTensor:
         return self.process_logits(input_ids, scores)
+
+def get_batch_possible_completion_tensors(input_ids, masked_scores, top_k=5):
+    results = []
+
+    for batch in range(len(masked_scores)):
+
+        input_ids_batch = input_ids[batch].to("cuda:0").long()  # Assuming input_ids are integers (torch.long)
+        masked_scores_batch = masked_scores[batch].to("cuda:0")  # Assuming scores are on GPU
+
+        # Generate indices and create mask, replacing -inf with -1
+        indices = torch.arange(len(masked_scores_batch), device="cuda:0").long()  # Ensure indices are integers
+        mask = torch.where(masked_scores_batch != float("-inf"), indices, torch.tensor(-1, device="cuda:0", dtype=torch.int64))
+
+        # Get top-k indices based on masked_scores_batch
+        top_k_scores, top_k_indices = torch.topk(masked_scores_batch, top_k, dim=0, largest=True)
+
+        # Initialize the result tensor with -1 (or another placeholder value)
+        result = torch.full((len(masked_scores_batch), input_ids_batch.size(0) + 1), -1, device="cuda:0", dtype=torch.int64)
+
+        # Mask for top-k indices (we only want to keep sequences corresponding to the top-k scores)
+        valid_mask = torch.isin(mask, top_k_indices)  # This ensures only top-k indices are processed
+
+        # Get valid indices (where mask is not -1 and in the top-k)
+        valid_indices = mask[valid_mask]
+
+        # Now, create the concatenated sequences only for valid top-k indices
+        concatenated_sequences = torch.cat([input_ids_batch.unsqueeze(0).repeat(valid_indices.size(0), 1), valid_indices.unsqueeze(1)], dim=1)
+
+        # Update the result tensor with concatenated sequences at the valid positions
+        result[valid_mask] = concatenated_sequences
+
+        # Append the result to the results list
+        results.append((result, top_k_indices))  # Also keep track of the top-k indices
+
+    return results
+
+
+# Function to decode only valid sequences (top-k) from the batch
+def check_negative_constraint_str(input_ids, masked_scores, tokenizer, top_k=5):
+    decoded_results = []
+
+    for batch, top_k_indices in get_batch_possible_completion_tensors(input_ids, masked_scores, top_k):
+
+        # Find padding token ID for the tokenizer
+        padding_token_id = tokenizer.pad_token_id if tokenizer.pad_token_id is not None else 0
+
+        # Replace -1 (invalid tokens) with the padding token ID
+        result = torch.where(batch == -1, padding_token_id, batch)
+
+        # Move to CPU for decoding
+        result_cpu = result.cpu()
+
+        valid_sequences = result_cpu[result_cpu != padding_token_id]
+
+        # Reshape valid sequences dynamically based on the number of valid elements
+        # This ensures we don't encounter shape mismatches
+        if valid_sequences.size(0) > 0:
+            # Reshape valid sequences to group them correctly for batch decoding
+            # We reshape it as needed for the batch decode
+            print(valid_sequences)
+            print(valid_sequences.shape)
+            print(result_cpu.shape)
+            valid_sequences = valid_sequences.view(-1, result_cpu.size(1))
+            
+
+            # Decode valid sequences only
+            decoded_batch = tokenizer.batch_decode(valid_sequences.tolist(), skip_special_tokens=True)
+            decoded_results.extend(decoded_batch)
+        # At this point, you can now use `top_k_indices` to mask the original `masked_scores` based on the decoded results
+        # Example: you can update masked_scores based on some condition related to the decoded strings
+        # (For example, applying a new score mask based on certain keywords or conditions in the decoded strings)
+        for idx, top_k_index in enumerate(top_k_indices):
+            # Here, top_k_index corresponds to the original index of the top-k element in the masked_scores
+            # You can mask scores or apply adjustments here using `top_k_index`
+            pass
+
+    print(decoded_results)
+    return masked_scores  # Return both decoded results and modified masked_scores (if needed)
+
+
 
 class NegativeConstraintNGramLogitsProcessor(LogitsProcessor):
 

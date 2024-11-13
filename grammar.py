@@ -11,6 +11,7 @@ from transformers_cfg.tokenization.byte_trie import ByteTrie
 from transformers_cfg.tokenization.middle.TokenizerMiddleMapping import (
     TokenizerMiddleMapping,
 )
+from transformers_cfg.utf8_utils import PartialUTF8, decode_utf8
 
 logger = logging.getLogger(__name__)
 
@@ -157,7 +158,9 @@ class IncrementalTokenRecognizer(AbsTokenRecognizer):
     def update_state_with_batch_token_seqs(
         self, input_ids, batch_parsing_states, valid_token_start_idx=None
     ):
-
+        
+        #print(self.tokenizer.batch_decode(input_ids, skip_special_tokens=True))
+        #quit()
         if self.last_size is None:
             valid_prefix_tokens = [
                 (
@@ -266,8 +269,11 @@ class IncrementalTokenRecognizer(AbsTokenRecognizer):
             token_acceptance = self.byte_trie.get_next_token_acceptance(
                 accept=accept_f, accept_eos=False, eos_token_id=self.eos_token_id
             )
+            #print(str_trie_node(self.byte_trie.root))
         else:
             accepts = [False] * len(self.homomorphism)
+            #print(str_trie_node(self.byte_trie.root))
+            #print(str_trie_node(self.byte_trie.root))
             token_acceptance = check_token_acceptance_in_trie(
                 self.byte_trie.root,
                 [stack],
@@ -275,10 +281,12 @@ class IncrementalTokenRecognizer(AbsTokenRecognizer):
                 self.eos_token_id,
                 accepts,
             )
+            #print(str_trie_node(self.byte_trie.root))
             #print(stack)
         x = torch.tensor(token_acceptance, dtype=torch.bool, device=device)
         x_eos = self.validate_and_set_eos_acceptance(x)
         #print(x_eos)
+        #print(str_trie_node(self.byte_trie.root))
         return x_eos
 
 
@@ -320,6 +328,17 @@ class IncrementalTokenRecognizer(AbsTokenRecognizer):
 
 #     return accepts
 
+def str_trie_node(trie_node):
+    for byte, next_trie_node in trie_node.children.items():
+        if next_trie_node:
+            return chr(byte) + str_trie_node(next_trie_node)
+        else:
+            return chr(byte)
+    return ""
+
+def str_stacks(stacks, tokenizer):
+    return [tokenizer.decode(stk) for stk in stacks]
+       
 
 def check_token_acceptance_in_trie(trie_node, stacks, grammar, eos_token_id, accepts):
     if trie_node.is_end_of_word:
@@ -330,6 +349,8 @@ def check_token_acceptance_in_trie(trie_node, stacks, grammar, eos_token_id, acc
             accepts[token_id] = bool(stacks)
 
     #print(token_id)
+    #print(str_trie_node(trie_node))
+    #print(str_stacks(stacks, grammar.tokenizer))
 
     for byte, next_trie_node in trie_node.children.items():
         new_stacks = set()
@@ -361,6 +382,8 @@ def check_token_acceptance_in_trie(trie_node, stacks, grammar, eos_token_id, acc
             check_token_acceptance_in_trie(
                 next_trie_node, new_stacks, grammar, eos_token_id, accepts
             )
+
+    #print(str_trie_node(trie_node))
 
     return accepts
 

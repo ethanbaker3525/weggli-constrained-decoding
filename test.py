@@ -41,7 +41,7 @@ if __name__ == "__main__":
     prefix1 = "This is a valid json string for http request:"
     prefix2 = "This is a valid json string for shopping cart:"
     input_ids = tokenizer(
-        [prefix1, prefix2], add_special_tokens=False, return_tensors="pt", padding=True
+        [prefix1], add_special_tokens=False, return_tensors="pt", padding=True
     )["input_ids"].to(
         device
     )  # Move input_ids to the same device as model
