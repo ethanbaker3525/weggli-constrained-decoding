@@ -360,8 +360,9 @@ def check_token_acceptance_in_trie(trie_node, stacks, grammar, eos_token_id, acc
             if not stk:
                 continue
 
-            if byte == 104:
-                continue
+            ### HERE ###
+            #if byte == 104:
+            #    continue
 
             next_element_offset = stk[-1]
             num_chars = grammar.grammar_encoding[next_element_offset]

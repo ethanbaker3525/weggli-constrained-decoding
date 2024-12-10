@@ -2,7 +2,7 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from transformers_cfg.grammar_utils import IncrementalGrammarConstraint, NonIncrementalGrammarConstraint
 #from transformers_cfg.generation.logits_process import GrammarConstrainedLogitsProcessor
-from logits import GrammarConstrainedLogitsProcessor, NegativeConstraintNGramLogitsProcessor
+from logits import GrammarQueryConstrainedLogitsProcessor, NegativeConstraintNGramLogitsProcessor
 from grammar import IncrementalTokenRecognizer as IncrementalGrammarConstraint
 
 import logging
@@ -35,13 +35,13 @@ if __name__ == "__main__":
     with open("json.ebnf", "r") as file:
         grammar_str = file.read()
     grammar = IncrementalGrammarConstraint(grammar_str, "root", tokenizer)
-    grammar_processor = GrammarConstrainedLogitsProcessor(grammar) #NegativeConstraintNGramLogitsProcessor(tokenizer(["\n"]).input_ids) #
+    grammar_query_processor = GrammarQueryConstrainedLogitsProcessor(grammar, lambda x: False) 
 
     # Generate
     prefix1 = "This is a valid json string for http request:"
     prefix2 = "This is a valid json string for shopping cart:"
     input_ids = tokenizer(
-        [prefix1], add_special_tokens=False, return_tensors="pt", padding=True
+        prefix1, add_special_tokens=False, return_tensors="pt", padding=True
     )["input_ids"].to(
         device
     )  # Move input_ids to the same device as model
@@ -50,7 +50,7 @@ if __name__ == "__main__":
         input_ids,
         do_sample=False,
         max_new_tokens=60,
-        logits_processor=[grammar_processor],
+        logits_processor=[grammar_query_processor],
         repetition_penalty=1.1,
         num_return_sequences=1,
         pad_token_id=tokenizer.eos_token_id,

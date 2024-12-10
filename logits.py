@@ -11,16 +11,19 @@ from transformers.generation.logits_process import (
 )
 from transformers.utils import add_start_docstrings
 
+import weggli
+
 logger = logging.getLogger(__name__)
 
 
-class GrammarConstrainedLogitsProcessor(LogitsProcessor):
-    def __init__(self, grammar_constraint, valid_token_start_idx=None, device=None):
+class GrammarQueryConstrainedLogitsProcessor(LogitsProcessor):
+    def __init__(self, grammar_constraint, query_constraint, valid_token_start_idx=None, device=None):
         self.last_size = None
         self.grammar_constraint = grammar_constraint
         self.batch_parsing_states = None
         self.valid_token_start_idx = valid_token_start_idx
         self.device = device
+        self.query_constraint = query_constraint
 
     def mask_logits(self, logits, device):
         masked_logits = logits.clone()
@@ -138,7 +141,7 @@ class GrammarConstrainedLogitsProcessor(LogitsProcessor):
         #quit()
         
 
-        masked_scores = check_negative_constraint_str(input_ids, masked_scores, self.grammar_constraint.tokenizer)
+        masked_scores = check_negative_constraint_str(input_ids, masked_scores, self.grammar_constraint.tokenizer, self.query_constraint)
 
         return masked_scores
 
@@ -149,22 +152,24 @@ class GrammarConstrainedLogitsProcessor(LogitsProcessor):
         return self.process_logits(input_ids, scores)
 
 def get_batch_possible_completion_tensors(input_ids, masked_scores, top_k=5):
+
+    device = "cuda" if torch.cuda.is_available() else "cpu"
     results = []
 
     for batch in range(len(masked_scores)):
 
-        input_ids_batch = input_ids[batch].to("cuda:0").long()  # Assuming input_ids are integers (torch.long)
-        masked_scores_batch = masked_scores[batch].to("cuda:0")  # Assuming scores are on GPU
+        input_ids_batch = input_ids[batch].to(device).long()  # Assuming input_ids are integers (torch.long)
+        masked_scores_batch = masked_scores[batch].to(device)  # Assuming scores are on GPU
 
         # Generate indices and create mask, replacing -inf with -1
-        indices = torch.arange(len(masked_scores_batch), device="cuda:0").long()  # Ensure indices are integers
-        mask = torch.where(masked_scores_batch != float("-inf"), indices, torch.tensor(-1, device="cuda:0", dtype=torch.int64))
+        indices = torch.arange(len(masked_scores_batch), device=device).long()  # Ensure indices are integers
+        mask = torch.where(masked_scores_batch != float("-inf"), indices, torch.tensor(-1, device=device, dtype=torch.int64))
 
         # Get top-k indices based on masked_scores_batch
         top_k_scores, top_k_indices = torch.topk(masked_scores_batch, top_k, dim=0, largest=True)
 
         # Initialize the result tensor with -1 (or another placeholder value)
-        result = torch.full((len(masked_scores_batch), input_ids_batch.size(0) + 1), -1, device="cuda:0", dtype=torch.int64)
+        result = torch.full((len(masked_scores_batch), input_ids_batch.size(0) + 1), -1, device=device, dtype=torch.int64)
 
         # Mask for top-k indices (we only want to keep sequences corresponding to the top-k scores)
         valid_mask = torch.isin(mask, top_k_indices)  # This ensures only top-k indices are processed
@@ -185,7 +190,9 @@ def get_batch_possible_completion_tensors(input_ids, masked_scores, top_k=5):
 
 
 # Function to decode only valid sequences (top-k) from the batch
-def check_negative_constraint_str(input_ids, masked_scores, tokenizer, top_k=5):
+def check_negative_constraint_str(input_ids, masked_scores, tokenizer, query_constraint, top_k=5):
+
+    device = "cuda" if torch.cuda.is_available() else "cpu"
     decoded_results = []
 
     for batch, top_k_indices in get_batch_possible_completion_tensors(input_ids, masked_scores, top_k):
@@ -206,13 +213,15 @@ def check_negative_constraint_str(input_ids, masked_scores, tokenizer, top_k=5):
         if valid_sequences.size(0) > 0:
             # Reshape valid sequences to group them correctly for batch decoding
             # We reshape it as needed for the batch decode
-            print(valid_sequences)
-            print(valid_sequences.shape)
-            print(result_cpu.shape)
-            valid_sequences = valid_sequences.view(-1, result_cpu.size(1))
+            # print(valid_sequences)
+            #print(valid_sequences.shape)
+            #print(result_cpu.shape)
+            if device == "cuda":
+                valid_sequences = valid_sequences.view(-1, result_cpu.size(1))
             
 
             # Decode valid sequences only
+            #print(valid_sequences)
             decoded_batch = tokenizer.batch_decode(valid_sequences.tolist(), skip_special_tokens=True)
             decoded_results.extend(decoded_batch)
         # At this point, you can now use `top_k_indices` to mask the original `masked_scores` based on the decoded results
@@ -221,9 +230,19 @@ def check_negative_constraint_str(input_ids, masked_scores, tokenizer, top_k=5):
         for idx, top_k_index in enumerate(top_k_indices):
             # Here, top_k_index corresponds to the original index of the top-k element in the masked_scores
             # You can mask scores or apply adjustments here using `top_k_index`
-            pass
+            #print(input_ids)
+            #print(masked_scores)
+            #print(top_k_index)
+            #print(idx)
+            #print(decoded_results)
+            output = tokenizer.decode(input_ids.tolist()[0] + [top_k_index.tolist()])
+            if query_constraint(output):
+                masked_scores[top_k_index] = float("-inf")
+
+
 
     print(decoded_results)
+    quit()
     return masked_scores  # Return both decoded results and modified masked_scores (if needed)
 
 
@@ -240,13 +259,13 @@ class NegativeConstraintNGramLogitsProcessor(LogitsProcessor):
         cur_len = input_ids.shape[-1]
         for i in range(num_batch_hypotheses):
             for ngram in self.negative_constraints:
-                print(ngram)
+                # print(ngram)
                 ngram_size = len(ngram) + 1
                 if cur_len + 1 < ngram_size:
                     continue
                 prev_ngram_tuple = tuple(input_ids[i, cur_len + 1 - ngram_size:cur_len].tolist())
                 banned_token = self.negative_constraints.get(prev_ngram_tuple, None)
-                print(banned_token)
+                # print(banned_token)
                 if banned_token is not None:
                     scores[i, banned_token] = float("-inf")
 
