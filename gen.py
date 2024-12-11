@@ -7,20 +7,12 @@ from grammar import IncrementalTokenRecognizer as IncrementalGrammarConstraint
 
 import logging
 
-#logger = logging.getLogger('test')
-logging.basicConfig(
-    level=logging.DEBUG,
-    filename="test.log",
-    encoding="utf-8",
-    filemode="a",
-    )
+import weggli
 
-if __name__ == "__main__":
+def generate(inputs, model_id, grammar_file, weggli_query, **kwargs):
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
-
-    model_id = "deepseek-ai/deepseek-coder-1.3b-base"
 
     # Load model and tokenizer
     tokenizer = AutoTokenizer.from_pretrained(model_id)
@@ -32,16 +24,15 @@ if __name__ == "__main__":
     model.generation_config.pad_token_id = model.generation_config.eos_token_id
 
     # Load grammar
-    with open("json.ebnf", "r") as file:
+    with open(grammar_file, "r") as file:
         grammar_str = file.read()
     grammar = IncrementalGrammarConstraint(grammar_str, "root", tokenizer)
-    grammar_query_processor = GrammarQueryConstrainedLogitsProcessor(grammar, lambda x: False) 
+    grammar_query_processor = GrammarQueryConstrainedLogitsProcessor(grammar, weggli.weggli_query_constraint(weggli_query)) 
 
     # Generate
-    prefix1 = "This is a valid json string for http request:"
-    prefix2 = "This is a valid json string for shopping cart:"
+
     input_ids = tokenizer(
-        prefix1, add_special_tokens=False, return_tensors="pt", padding=True
+        inputs, add_special_tokens=True, return_tensors="pt", padding=True
     )["input_ids"].to(
         device
     )  # Move input_ids to the same device as model
@@ -49,7 +40,7 @@ if __name__ == "__main__":
     output = model.generate(
         input_ids,
         do_sample=False,
-        max_new_tokens=60,
+        max_new_tokens=120,
         logits_processor=[grammar_query_processor],
         repetition_penalty=1.1,
         num_return_sequences=1,
@@ -57,9 +48,38 @@ if __name__ == "__main__":
     )
     # decode output
     generations = tokenizer.batch_decode(output, skip_special_tokens=True)
-    print(generations)
+    return generations
 
-    """
-    'This is a valid json string for http request:{ "request": { "method": "GET", "headers": [], "content": "Content","type": "application" }}
-    'This is a valid json string for shopping cart:This is a valid json string for shopping cart:{ "name": "MyCart", "price": 0, "value": 1 }
-    """
+def main():
+
+    inputs = ["""
+              
+Complete the following code using `memcpy`.
+
+```
+#include <stdio.h>
+#include <string.h>
+              
+int main() {
+
+    char str1[] = "Hello ";
+    char str2[] = "there!";
+
+    puts("str1 before memcpy ");
+    puts(str1);
+
+    // Copies contents of str2 to str1
+"""]
+    
+    query = """
+    {
+        memcpy(_,_,6);
+    }
+"""
+
+    print(generate(inputs, "deepseek-ai/deepseek-coder-1.3b-base", "c.ebnf", query))
+    
+
+if __name__ == "__main__":
+    main()
+

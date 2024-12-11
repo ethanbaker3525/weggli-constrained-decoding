@@ -195,7 +195,7 @@ def check_negative_constraint_str(input_ids, masked_scores, tokenizer, query_con
     device = "cuda" if torch.cuda.is_available() else "cpu"
     decoded_results = []
 
-    for batch, top_k_indices in get_batch_possible_completion_tensors(input_ids, masked_scores, top_k):
+    for batch_idx, (batch, top_k_indices) in enumerate(get_batch_possible_completion_tensors(input_ids, masked_scores, top_k)):
 
         # Find padding token ID for the tokenizer
         padding_token_id = tokenizer.pad_token_id if tokenizer.pad_token_id is not None else 0
@@ -236,13 +236,14 @@ def check_negative_constraint_str(input_ids, masked_scores, tokenizer, query_con
             #print(idx)
             #print(decoded_results)
             output = tokenizer.decode(input_ids.tolist()[0] + [top_k_index.tolist()])
+            #print(output)
             if query_constraint(output):
-                masked_scores[top_k_index] = float("-inf")
+                masked_scores[batch_idx][top_k_index] = float("-inf")
 
 
 
-    print(decoded_results)
-    quit()
+    #print(decoded_results)
+    #quit()
     return masked_scores  # Return both decoded results and modified masked_scores (if needed)
 
 

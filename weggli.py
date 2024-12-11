@@ -2,7 +2,12 @@ import subprocess
 import tempfile
 import os
 
-def run_weggli(query: str, source_code: str) -> str:
+def test(a):
+    print(a)
+    return False
+    #return "J" in a
+
+def weggli(query: str, source_code: str) -> str:
 
     try:
         # Write the source code to a temporary file with a recognized C++ extension
@@ -30,30 +35,46 @@ def run_weggli(query: str, source_code: str) -> str:
         if 'source_file_path' in locals() and os.path.exists(source_file_path):
             os.unlink(source_file_path)
 
+def weggli_query_constraint(q):
+    def f(src):
+        print(src)
+        return weggli(q, src) != ""
+    return f
 
-# Example usage
-query = """
-{
-    _ $buf[_];
-    memcpy($buf,_,_);
-}
-"""
-source_code = """
-this is a test
+if __name__ == "__main__":
 
+    # Example usage
+    query = """
+    {
+        memcpy(_,_,6);
+    }
+    """
+    source_code = """
+```%
+<｜begin▁of▁sentence｜>
+              
+Complete the following code using `memcpy`.
+
+```
 #include <stdio.h>
 #include <string.h>
+              
+int main() {
 
-void foo(const char *input) {
-    char buffer[16]; // Small fixed-size buffer
-    printf("Processing input: %s\n", input);
+    char str1[] = "Hello ";
+    char str2[] = "there!";
 
-    // Vulnerable: No bounds checking on input
-    memcpy(buffer, input, 1);
+    puts("str1 before memcpy ");
+    puts(str1);
 
-    printf("Buffer content: %s\n", buffer);
+    // Copies contents of str2 to str1
+
+    memcpy(str1, str2, 5);
+
+    puts("\nstr1 after memcpy");
+    puts(str1);
 }
 
-"""
-output = run_weggli(query, source_code)
-print(output)
+    """
+    output = weggli(query, source_code)
+    print(output == "")
