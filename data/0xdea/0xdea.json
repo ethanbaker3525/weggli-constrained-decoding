@@ -1,0 +1,1817 @@
+[
+    {
+        "args": [
+            "-R",
+            "'func=^gets$'",
+            "'{$func();}'"
+        ],
+        "cwes": [
+            "CWE-120",
+            "CWE-242",
+            "CWE-676"
+        ],
+        "desc": "call to unbounded copy functions (CWE-120, CWE-242, CWE-676)"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=st(r|p)(cpy|cat)$'",
+            "'{$func();}'"
+        ],
+        "cwes": [
+            "CWE-120",
+            "CWE-242",
+            "CWE-676"
+        ],
+        "desc": "call to unbounded copy functions (CWE-120, CWE-242, CWE-676)"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=wc(s|p)(cpy|cat)$'",
+            "'{$func();}'"
+        ],
+        "cwes": [
+            "CWE-120",
+            "CWE-242",
+            "CWE-676"
+        ],
+        "desc": "call to unbounded copy functions (CWE-120, CWE-242, CWE-676)"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=sprintf$'",
+            "'{$func();}'"
+        ],
+        "cwes": [
+            "CWE-120",
+            "CWE-242",
+            "CWE-676"
+        ],
+        "desc": "call to unbounded copy functions (CWE-120, CWE-242, CWE-676)"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=scanf$'",
+            "'{$func();}'"
+        ],
+        "cwes": [
+            "CWE-120",
+            "CWE-242",
+            "CWE-676"
+        ],
+        "desc": "call to unbounded copy functions (CWE-120, CWE-242, CWE-676)"
+    },
+    {
+        "args": [
+            "'{strncat(_,_,sizeof(_));}'"
+        ],
+        "cwes": [
+            "CWE-193",
+            "CWE-787"
+        ],
+        "desc": "incorrect use of strncat (CWE-193, CWE-787)"
+    },
+    {
+        "args": [
+            "'{strncat(_,_,strlen(_));}'"
+        ],
+        "cwes": [
+            "CWE-193",
+            "CWE-787"
+        ],
+        "desc": "incorrect use of strncat (CWE-193, CWE-787)"
+    },
+    {
+        "args": [
+            "'{strncat($dst,$src,sizeof($dst)-strlen($dst));}'"
+        ],
+        "cwes": [
+            "CWE-193",
+            "CWE-787"
+        ],
+        "desc": "incorrect use of strncat (CWE-193, CWE-787)"
+    },
+    {
+        "args": [
+            "'{_ $buf[$len]; strncat($buf,_,$len);}'"
+        ],
+        "cwes": [
+            "CWE-193",
+            "CWE-787"
+        ],
+        "desc": "incorrect use of strncat (CWE-193, CWE-787)"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=cpy$'",
+            "'{$func(_,$src,_($src));}'"
+        ],
+        "cwes": [
+            "CWE-806"
+        ],
+        "desc": "destination buffer access using size of source buffer (CWE-806)"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=cpy$'",
+            "'{$len=_($src); $func(_,$src,$len);}'"
+        ],
+        "cwes": [
+            "CWE-806"
+        ],
+        "desc": "destination buffer access using size of source buffer (CWE-806)"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=cpy$'",
+            "'{_ $src[$len]; $func($dst,$src,$len);}'"
+        ],
+        "cwes": [
+            "CWE-806"
+        ],
+        "desc": "destination buffer access using size of source buffer (CWE-806)"
+    },
+    {
+        "args": [
+            "'{_* $ptr; sizeof($ptr);}'"
+        ],
+        "cwes": [
+            "CWE-467"
+        ],
+        "desc": "use of sizeof() on a pointer type (CWE-467)"
+    },
+    {
+        "args": [
+            "'{_* $ptr=_; sizeof($ptr);}'"
+        ],
+        "cwes": [
+            "CWE-467"
+        ],
+        "desc": "use of sizeof() on a pointer type (CWE-467)"
+    },
+    {
+        "args": [
+            "'_ $func(_* $ptr) {sizeof($ptr);}'"
+        ],
+        "cwes": [
+            "CWE-467"
+        ],
+        "desc": "use of sizeof() on a pointer type (CWE-467)"
+    },
+    {
+        "args": [
+            "'_'"
+        ],
+        "cwes": [],
+        "desc": "use of sizeof() on a character constant"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=ncpy$'",
+            "'{$func($buf,_); not:$buf[_]=_;}'"
+        ],
+        "cwes": [
+            "CWE-170"
+        ],
+        "desc": "lack of explicit NUL-termination after strncpy(), etc. (CWE-170)"
+    },
+    {
+        "args": [
+            "'{$buf[sizeof($buf)];}'"
+        ],
+        "cwes": [
+            "CWE-193"
+        ],
+        "desc": "off-by-one error (CWE-193)"
+    },
+    {
+        "args": [
+            "'{_ $buf[$len]; $buf[$len]=_;}'"
+        ],
+        "cwes": [
+            "CWE-193"
+        ],
+        "desc": "off-by-one error (CWE-193)"
+    },
+    {
+        "args": [
+            "'{strlen($src)>sizeof($dst);}'"
+        ],
+        "cwes": [
+            "CWE-193"
+        ],
+        "desc": "off-by-one error (CWE-193)"
+    },
+    {
+        "args": [
+            "'{strlen($src)<=sizeof($dst);}'"
+        ],
+        "cwes": [
+            "CWE-193"
+        ],
+        "desc": "off-by-one error (CWE-193)"
+    },
+    {
+        "args": [
+            "'{sizeof($dst)<strlen($src);}'"
+        ],
+        "cwes": [
+            "CWE-193"
+        ],
+        "desc": "off-by-one error (CWE-193)"
+    },
+    {
+        "args": [
+            "'{sizeof($dst)>=strlen($src);}'"
+        ],
+        "cwes": [
+            "CWE-193"
+        ],
+        "desc": "off-by-one error (CWE-193)"
+    },
+    {
+        "args": [
+            "'{$buf[strlen($buf)-1];}'"
+        ],
+        "cwes": [
+            "CWE-193"
+        ],
+        "desc": "off-by-one error (CWE-193)"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=allocf?$'",
+            "'{$func(strlen($buf));}'"
+        ],
+        "cwes": [
+            "CWE-193"
+        ],
+        "desc": "off-by-one error (CWE-193)"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=allocf?$'",
+            "'{$len=strlen(_); $ptr=$func($len);}'"
+        ],
+        "cwes": [
+            "CWE-193"
+        ],
+        "desc": "off-by-one error (CWE-193)"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=allocf?$'",
+            "'{$len=snprintf(_); $ptr=$func($len);}'"
+        ],
+        "cwes": [
+            "CWE-193"
+        ],
+        "desc": "off-by-one error (CWE-193)"
+    },
+    {
+        "args": [
+            "'{_* $ptr1; $ptr1-$ptr2;}'"
+        ],
+        "cwes": [
+            "CWE-469"
+        ],
+        "desc": "use of pointer subtraction to determine size (CWE-469)"
+    },
+    {
+        "args": [
+            "'{_* $ptr2; $ptr1-$ptr2;}'"
+        ],
+        "cwes": [
+            "CWE-469"
+        ],
+        "desc": "use of pointer subtraction to determine size (CWE-469)"
+    },
+    {
+        "args": [
+            "'{_* $ptr1=_; $ptr1-$ptr2;}'"
+        ],
+        "cwes": [
+            "CWE-469"
+        ],
+        "desc": "use of pointer subtraction to determine size (CWE-469)"
+    },
+    {
+        "args": [
+            "'{_* $ptr2=_; $ptr1-$ptr2;}'"
+        ],
+        "cwes": [
+            "CWE-469"
+        ],
+        "desc": "use of pointer subtraction to determine size (CWE-469)"
+    },
+    {
+        "args": [
+            "'_ $func(_* $ptr1) {$ptr1-$ptr2;}'"
+        ],
+        "cwes": [
+            "CWE-469"
+        ],
+        "desc": "use of pointer subtraction to determine size (CWE-469)"
+    },
+    {
+        "args": [
+            "'_ $func(_* $ptr2) {$ptr1-$ptr2;}'"
+        ],
+        "cwes": [
+            "CWE-469"
+        ],
+        "desc": "use of pointer subtraction to determine size (CWE-469)"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=(nprintf|lcpy|lcat)$'",
+            "'{$ret=$func();}'"
+        ],
+        "cwes": [
+            "CWE-787"
+        ],
+        "desc": "potentially unsafe use of the return value of snprintf(), etc. (CWE-787)"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=(cpy|cat|memmove|memset|sn?printf)$'",
+            "'{_ $buf[_]; $func($buf,_);}'"
+        ],
+        "cwes": [
+            "CWE-121"
+        ],
+        "desc": "direct write into buffer allocated on the stack (CWE-121)"
+    },
+    {
+        "args": [
+            "'{_ $buf[_]; $buf[_]=_;}'"
+        ],
+        "cwes": [
+            "CWE-121"
+        ],
+        "desc": "direct write into buffer allocated on the stack (CWE-121)"
+    },
+    {
+        "args": [
+            "-R",
+            "'$type=(unsigned|size_t)'",
+            "'{$type $var; $var<0;}'"
+        ],
+        "cwes": [
+            "CWE-697"
+        ],
+        "desc": "incorrect unsigned comparison (CWE-697)"
+    },
+    {
+        "args": [
+            "-R",
+            "'$type=(unsigned|size_t)'",
+            "'{$type $var; $var<=0;}'"
+        ],
+        "cwes": [
+            "CWE-697"
+        ],
+        "desc": "incorrect unsigned comparison (CWE-697)"
+    },
+    {
+        "args": [
+            "-R",
+            "'$type=(unsigned|size_t)'",
+            "'{$type $var; $var>=0;}'"
+        ],
+        "cwes": [
+            "CWE-697"
+        ],
+        "desc": "incorrect unsigned comparison (CWE-697)"
+    },
+    {
+        "args": [
+            "-R",
+            "'$type=(unsigned|size_t)'",
+            "'{$type $var=_; $var<0;}'"
+        ],
+        "cwes": [
+            "CWE-697"
+        ],
+        "desc": "incorrect unsigned comparison (CWE-697)"
+    },
+    {
+        "args": [
+            "-R",
+            "'$type=(unsigned|size_t)'",
+            "'{$type $var=_; $var<=0;}'"
+        ],
+        "cwes": [
+            "CWE-697"
+        ],
+        "desc": "incorrect unsigned comparison (CWE-697)"
+    },
+    {
+        "args": [
+            "-R",
+            "'$type=(unsigned|size_t)'",
+            "'{$type $var=_; $var>=0;}'"
+        ],
+        "cwes": [
+            "CWE-697"
+        ],
+        "desc": "incorrect unsigned comparison (CWE-697)"
+    },
+    {
+        "args": [
+            "-R",
+            "'$copy=(cpy|ncat)$'",
+            "'{int $len; $copy(_,_,$len);}'"
+        ],
+        "cwes": [
+            "CWE-195",
+            "CWE-196"
+        ],
+        "desc": "signed/unsigned conversion (CWE-195, CWE-196)"
+    },
+    {
+        "args": [
+            "-R",
+            "'$copy=(cpy|ncat)$'",
+            "'{int $len=_; $copy(_,_,$len);}'"
+        ],
+        "cwes": [
+            "CWE-195",
+            "CWE-196"
+        ],
+        "desc": "signed/unsigned conversion (CWE-195, CWE-196)"
+    },
+    {
+        "args": [
+            "-R",
+            "'$copy=(cpy|ncat)$'",
+            "'_ $func(int $len) {$copy(_,_,$len);}'"
+        ],
+        "cwes": [
+            "CWE-195",
+            "CWE-196"
+        ],
+        "desc": "signed/unsigned conversion (CWE-195, CWE-196)"
+    },
+    {
+        "args": [
+            "-R",
+            "'$copy=nprintf$'",
+            "'{int $len; $copy(_,$len);}'"
+        ],
+        "cwes": [
+            "CWE-195",
+            "CWE-196"
+        ],
+        "desc": "signed/unsigned conversion (CWE-195, CWE-196)"
+    },
+    {
+        "args": [
+            "-R",
+            "'$copy=nprintf$'",
+            "'{int $len=_; $copy(_,$len);}'"
+        ],
+        "cwes": [
+            "CWE-195",
+            "CWE-196"
+        ],
+        "desc": "signed/unsigned conversion (CWE-195, CWE-196)"
+    },
+    {
+        "args": [
+            "-R",
+            "'$copy=nprintf$'",
+            "'_ $func(int $len) {$copy(_,$len);}'"
+        ],
+        "cwes": [
+            "CWE-195",
+            "CWE-196"
+        ],
+        "desc": "signed/unsigned conversion (CWE-195, CWE-196)"
+    },
+    {
+        "args": [
+            "-R",
+            "'$type=(unsigned|size_t)'",
+            "'{$type $var1; int $var2; $var2=_($var1);}'"
+        ],
+        "cwes": [
+            "CWE-195",
+            "CWE-196"
+        ],
+        "desc": "signed/unsigned conversion (CWE-195, CWE-196)"
+    },
+    {
+        "args": [
+            "-R",
+            "'$type=(unsigned|size_t)'",
+            "'{$type $var1; int $var2; $var1=_($var2);}'"
+        ],
+        "cwes": [
+            "CWE-195",
+            "CWE-196"
+        ],
+        "desc": "signed/unsigned conversion (CWE-195, CWE-196)"
+    },
+    {
+        "args": [
+            "-R",
+            "'$type=(unsigned|size_t)'",
+            "'{$type $var1; int $var2=_($var1);}'"
+        ],
+        "cwes": [
+            "CWE-195",
+            "CWE-196"
+        ],
+        "desc": "signed/unsigned conversion (CWE-195, CWE-196)"
+    },
+    {
+        "args": [
+            "-R",
+            "'$type=(unsigned|size_t)'",
+            "'{int $var1; $type $var2; $var2=_($var1);}'"
+        ],
+        "cwes": [
+            "CWE-195",
+            "CWE-196"
+        ],
+        "desc": "signed/unsigned conversion (CWE-195, CWE-196)"
+    },
+    {
+        "args": [
+            "-R",
+            "'$type=(unsigned|size_t)'",
+            "'{int $var1; $type $var2; $var1=_($var2);}'"
+        ],
+        "cwes": [
+            "CWE-195",
+            "CWE-196"
+        ],
+        "desc": "signed/unsigned conversion (CWE-195, CWE-196)"
+    },
+    {
+        "args": [
+            "-R",
+            "'$type=(unsigned|size_t)'",
+            "'{int $var1=_; $type $var2=_($var1);}'"
+        ],
+        "cwes": [
+            "CWE-195",
+            "CWE-196"
+        ],
+        "desc": "signed/unsigned conversion (CWE-195, CWE-196)"
+    },
+    {
+        "args": [
+            "-R",
+            "'$type=(unsigned|size_t)'",
+            "'_ $func(int $var2) {$type $var1; $var1=_($var2);}'"
+        ],
+        "cwes": [
+            "CWE-195",
+            "CWE-196"
+        ],
+        "desc": "signed/unsigned conversion (CWE-195, CWE-196)"
+    },
+    {
+        "args": [
+            "-R",
+            "'$type=(unsigned|size_t)'",
+            "'_ $func(int $var2) {$type $var1=_($var2);}'"
+        ],
+        "cwes": [
+            "CWE-195",
+            "CWE-196"
+        ],
+        "desc": "signed/unsigned conversion (CWE-195, CWE-196)"
+    },
+    {
+        "args": [
+            "-R",
+            "'$type=(unsigned|size_t)'",
+            "'$type $func(_) {int $var; return $var;}'"
+        ],
+        "cwes": [
+            "CWE-195",
+            "CWE-196"
+        ],
+        "desc": "signed/unsigned conversion (CWE-195, CWE-196)"
+    },
+    {
+        "args": [
+            "-R",
+            "'$type=(unsigned|size_t)'",
+            "'int $func(_) {$type $var; return $var;}'"
+        ],
+        "cwes": [
+            "CWE-195",
+            "CWE-196"
+        ],
+        "desc": "signed/unsigned conversion (CWE-195, CWE-196)"
+    },
+    {
+        "args": [
+            "-R",
+            "'type=(short|int|long)'",
+            "'{$type $large; char $narrow; $narrow = $large; }'"
+        ],
+        "cwes": [
+            "CWE-197"
+        ],
+        "desc": "integer truncation (CWE-197)"
+    },
+    {
+        "args": [
+            "-R",
+            "'type=(short|int|long)'",
+            "'{$type $large; char $narrow = $large; }'"
+        ],
+        "cwes": [
+            "CWE-197"
+        ],
+        "desc": "integer truncation (CWE-197)"
+    },
+    {
+        "args": [
+            "-R",
+            "'type=(int|long)'",
+            "'{$type $large; short $narrow; $narrow = $large; }'"
+        ],
+        "cwes": [
+            "CWE-197"
+        ],
+        "desc": "integer truncation (CWE-197)"
+    },
+    {
+        "args": [
+            "-R",
+            "'type=(int|long)'",
+            "'{$type $large; short $narrow = $large; }'"
+        ],
+        "cwes": [
+            "CWE-197"
+        ],
+        "desc": "integer truncation (CWE-197)"
+    },
+    {
+        "args": [
+            "'{long $large; int $narrow; $narrow = $large; }'"
+        ],
+        "cwes": [
+            "CWE-197"
+        ],
+        "desc": "integer truncation (CWE-197)"
+    },
+    {
+        "args": [
+            "'{long $large; int $narrow = $large; }'"
+        ],
+        "cwes": [
+            "CWE-197"
+        ],
+        "desc": "integer truncation (CWE-197)"
+    },
+    {
+        "args": [
+            "-R",
+            "'type=(short|int|long)'",
+            "'_ $func($type $large) {char $narrow; $narrow = $large; }'"
+        ],
+        "cwes": [
+            "CWE-197"
+        ],
+        "desc": "integer truncation (CWE-197)"
+    },
+    {
+        "args": [
+            "-R",
+            "'type=(short|int|long)'",
+            "'_ $func($type $large) {char $narrow = $large; }'"
+        ],
+        "cwes": [
+            "CWE-197"
+        ],
+        "desc": "integer truncation (CWE-197)"
+    },
+    {
+        "args": [
+            "-R",
+            "'type=(int|long)'",
+            "'_ $func($type $large) {short $narrow; $narrow = $large; }'"
+        ],
+        "cwes": [
+            "CWE-197"
+        ],
+        "desc": "integer truncation (CWE-197)"
+    },
+    {
+        "args": [
+            "-R",
+            "'type=(int|long)'",
+            "'_ $func($type $large) {short $narrow = $large; }'"
+        ],
+        "cwes": [
+            "CWE-197"
+        ],
+        "desc": "integer truncation (CWE-197)"
+    },
+    {
+        "args": [
+            "'_ $func(long $large) {int $narrow; $narrow = $large; }'"
+        ],
+        "cwes": [
+            "CWE-197"
+        ],
+        "desc": "integer truncation (CWE-197)"
+    },
+    {
+        "args": [
+            "'_ $func(long $large) {int $narrow = $large; }'"
+        ],
+        "cwes": [
+            "CWE-197"
+        ],
+        "desc": "integer truncation (CWE-197)"
+    },
+    {
+        "args": [
+            "'short _'"
+        ],
+        "cwes": [
+            "CWE-190",
+            "CWE-680"
+        ],
+        "desc": "use of signed or short sizes, lengths, offsets, counts (CWE-190, CWE-680)"
+    },
+    {
+        "args": [
+            "'int _'"
+        ],
+        "cwes": [
+            "CWE-190",
+            "CWE-680"
+        ],
+        "desc": "use of signed or short sizes, lengths, offsets, counts (CWE-190, CWE-680)"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=(str|wcs)len$'",
+            "'{short $len; $len=$func();}'"
+        ],
+        "cwes": [
+            "CWE-190",
+            "CWE-680"
+        ],
+        "desc": "cast of the return value of strlen(), wcslen() to short (CWE-190, CWE-680)"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=allocf?$'",
+            "'{$func(_*_);}'"
+        ],
+        "cwes": [
+            "CWE-128",
+            "CWE-131",
+            "CWE-190",
+            "CWE-680"
+        ],
+        "desc": "integer wraparound (CWE-128, CWE-131, CWE-190, CWE-680)"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=allocf?$'",
+            "'{$func(_+_);}'"
+        ],
+        "cwes": [
+            "CWE-128",
+            "CWE-131",
+            "CWE-190",
+            "CWE-680"
+        ],
+        "desc": "integer wraparound (CWE-128, CWE-131, CWE-190, CWE-680)"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=allocf?$'",
+            "'{$n=_*_; $func($n);}'"
+        ],
+        "cwes": [
+            "CWE-128",
+            "CWE-131",
+            "CWE-190",
+            "CWE-680"
+        ],
+        "desc": "integer wraparound (CWE-128, CWE-131, CWE-190, CWE-680)"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=allocf?$'",
+            "'{$n=_+_; $func($n);}'"
+        ],
+        "cwes": [
+            "CWE-128",
+            "CWE-131",
+            "CWE-190",
+            "CWE-680"
+        ],
+        "desc": "integer wraparound (CWE-128, CWE-131, CWE-190, CWE-680)"
+    },
+    {
+        "args": [
+            "-R",
+            "'alloc=allocf?$'",
+            "-R",
+            "'copy=cpy$'",
+            "'{$alloc($x*_); $copy(_,_,$x);}'"
+        ],
+        "cwes": [
+            "CWE-128",
+            "CWE-131",
+            "CWE-190",
+            "CWE-680"
+        ],
+        "desc": "integer wraparound (CWE-128, CWE-131, CWE-190, CWE-680)"
+    },
+    {
+        "args": [
+            "-R",
+            "'alloc=allocf?$'",
+            "-R",
+            "'copy=cpy$'",
+            "'{$alloc($x+_); $copy(_,_,$x);}'"
+        ],
+        "cwes": [
+            "CWE-128",
+            "CWE-131",
+            "CWE-190",
+            "CWE-680"
+        ],
+        "desc": "integer wraparound (CWE-128, CWE-131, CWE-190, CWE-680)"
+    },
+    {
+        "args": [
+            "-u",
+            "-R",
+            "'alloc=allocf?$'",
+            "-R",
+            "'copy=cpy$'",
+            "'{$n=_*_; $alloc($n); $copy(_,_,$x);}'"
+        ],
+        "cwes": [
+            "CWE-128",
+            "CWE-131",
+            "CWE-190",
+            "CWE-680"
+        ],
+        "desc": "integer wraparound (CWE-128, CWE-131, CWE-190, CWE-680)"
+    },
+    {
+        "args": [
+            "-u",
+            "-R",
+            "'alloc=allocf?$'",
+            "-R",
+            "'copy=cpy$'",
+            "'{$n=_+_; $alloc($n); $copy(_,_,$x);}'"
+        ],
+        "cwes": [
+            "CWE-128",
+            "CWE-131",
+            "CWE-190",
+            "CWE-680"
+        ],
+        "desc": "integer wraparound (CWE-128, CWE-131, CWE-190, CWE-680)"
+    },
+    {
+        "args": [
+            "'{$x>_||($x+$y)>_;}'"
+        ],
+        "cwes": [
+            "CWE-128",
+            "CWE-131",
+            "CWE-190",
+            "CWE-680"
+        ],
+        "desc": "integer wraparound (CWE-128, CWE-131, CWE-190, CWE-680)"
+    },
+    {
+        "args": [
+            "'{$x>=_||($x+$y)>_;}'"
+        ],
+        "cwes": [
+            "CWE-128",
+            "CWE-131",
+            "CWE-190",
+            "CWE-680"
+        ],
+        "desc": "integer wraparound (CWE-128, CWE-131, CWE-190, CWE-680)"
+    },
+    {
+        "args": [
+            "'{$x>_||($x+$y)>=_;}'"
+        ],
+        "cwes": [
+            "CWE-128",
+            "CWE-131",
+            "CWE-190",
+            "CWE-680"
+        ],
+        "desc": "integer wraparound (CWE-128, CWE-131, CWE-190, CWE-680)"
+    },
+    {
+        "args": [
+            "'{$x>=_||($x+$y)>=_;}'"
+        ],
+        "cwes": [
+            "CWE-128",
+            "CWE-131",
+            "CWE-190",
+            "CWE-680"
+        ],
+        "desc": "integer wraparound (CWE-128, CWE-131, CWE-190, CWE-680)"
+    },
+    {
+        "args": [
+            "'{$x<_&&($x+$y)<_;}'"
+        ],
+        "cwes": [
+            "CWE-128",
+            "CWE-131",
+            "CWE-190",
+            "CWE-680"
+        ],
+        "desc": "integer wraparound (CWE-128, CWE-131, CWE-190, CWE-680)"
+    },
+    {
+        "args": [
+            "'{$x<=_&&($x+$y)<_;}'"
+        ],
+        "cwes": [
+            "CWE-128",
+            "CWE-131",
+            "CWE-190",
+            "CWE-680"
+        ],
+        "desc": "integer wraparound (CWE-128, CWE-131, CWE-190, CWE-680)"
+    },
+    {
+        "args": [
+            "'{$x<_&&($x+$y)<=_;}'"
+        ],
+        "cwes": [
+            "CWE-128",
+            "CWE-131",
+            "CWE-190",
+            "CWE-680"
+        ],
+        "desc": "integer wraparound (CWE-128, CWE-131, CWE-190, CWE-680)"
+    },
+    {
+        "args": [
+            "'{$x<=_&&($x+$y)<=_;}'"
+        ],
+        "cwes": [
+            "CWE-128",
+            "CWE-131",
+            "CWE-190",
+            "CWE-680"
+        ],
+        "desc": "integer wraparound (CWE-128, CWE-131, CWE-190, CWE-680)"
+    },
+    {
+        "args": [
+            "'{$x>_||($x*$y)>_;}'"
+        ],
+        "cwes": [
+            "CWE-128",
+            "CWE-131",
+            "CWE-190",
+            "CWE-680"
+        ],
+        "desc": "integer wraparound (CWE-128, CWE-131, CWE-190, CWE-680)"
+    },
+    {
+        "args": [
+            "'{$x>=_||($x*$y)>_;}'"
+        ],
+        "cwes": [
+            "CWE-128",
+            "CWE-131",
+            "CWE-190",
+            "CWE-680"
+        ],
+        "desc": "integer wraparound (CWE-128, CWE-131, CWE-190, CWE-680)"
+    },
+    {
+        "args": [
+            "'{$x>_||($x*$y)>=_;}'"
+        ],
+        "cwes": [
+            "CWE-128",
+            "CWE-131",
+            "CWE-190",
+            "CWE-680"
+        ],
+        "desc": "integer wraparound (CWE-128, CWE-131, CWE-190, CWE-680)"
+    },
+    {
+        "args": [
+            "'{$x>=_||($x*$y)>=_;}'"
+        ],
+        "cwes": [
+            "CWE-128",
+            "CWE-131",
+            "CWE-190",
+            "CWE-680"
+        ],
+        "desc": "integer wraparound (CWE-128, CWE-131, CWE-190, CWE-680)"
+    },
+    {
+        "args": [
+            "'{$x<_&&($x*$y)<_;}'"
+        ],
+        "cwes": [
+            "CWE-128",
+            "CWE-131",
+            "CWE-190",
+            "CWE-680"
+        ],
+        "desc": "integer wraparound (CWE-128, CWE-131, CWE-190, CWE-680)"
+    },
+    {
+        "args": [
+            "'{$x<=_&&($x*$y)<_;}'"
+        ],
+        "cwes": [
+            "CWE-128",
+            "CWE-131",
+            "CWE-190",
+            "CWE-680"
+        ],
+        "desc": "integer wraparound (CWE-128, CWE-131, CWE-190, CWE-680)"
+    },
+    {
+        "args": [
+            "'{$x<_&&($x*$y)<=_;}'"
+        ],
+        "cwes": [
+            "CWE-128",
+            "CWE-131",
+            "CWE-190",
+            "CWE-680"
+        ],
+        "desc": "integer wraparound (CWE-128, CWE-131, CWE-190, CWE-680)"
+    },
+    {
+        "args": [
+            "'{$x<=_&&($x*$y)<=_;}'"
+        ],
+        "cwes": [
+            "CWE-128",
+            "CWE-131",
+            "CWE-190",
+            "CWE-680"
+        ],
+        "desc": "integer wraparound (CWE-128, CWE-131, CWE-190, CWE-680)"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=(printf|scanf|syslog)$'",
+            "'{$func();}'"
+        ],
+        "cwes": [
+            "CWE-134"
+        ],
+        "desc": "call to printf(), scanf(), syslog() family functions (CWE-134)"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=alloca$'",
+            "'{$func();}'"
+        ],
+        "cwes": [
+            "CWE-676",
+            "CWE-1325"
+        ],
+        "desc": "call to alloca() (CWE-676, CWE-1325)"
+    },
+    {
+        "args": [
+            "'{free($ptr); not:$ptr=_; not:free($ptr); _($ptr);}'"
+        ],
+        "cwes": [
+            "CWE-416"
+        ],
+        "desc": "use after free (CWE-416)"
+    },
+    {
+        "args": [
+            "'{free($ptr); not:$ptr=_; free($ptr);}'"
+        ],
+        "cwes": [
+            "CWE-415"
+        ],
+        "desc": "double free (CWE-415)"
+    },
+    {
+        "args": [
+            "'{_ $ptr[]; free($ptr);}'"
+        ],
+        "cwes": [
+            "CWE-590"
+        ],
+        "desc": "calling free() on memory not allocated in the heap (CWE-590)"
+    },
+    {
+        "args": [
+            "'{_ $ptr[]=_; free($ptr);}'"
+        ],
+        "cwes": [
+            "CWE-590"
+        ],
+        "desc": "calling free() on memory not allocated in the heap (CWE-590)"
+    },
+    {
+        "args": [
+            "'{_ $ptr[]; $ptr2=$ptr; free($ptr2);}'"
+        ],
+        "cwes": [
+            "CWE-590"
+        ],
+        "desc": "calling free() on memory not allocated in the heap (CWE-590)"
+    },
+    {
+        "args": [
+            "'{_ $ptr[]=_; $ptr2=$ptr; free($ptr2);}'"
+        ],
+        "cwes": [
+            "CWE-590"
+        ],
+        "desc": "calling free() on memory not allocated in the heap (CWE-590)"
+    },
+    {
+        "args": [
+            "'{_ $var; free(&$var);}'"
+        ],
+        "cwes": [
+            "CWE-590"
+        ],
+        "desc": "calling free() on memory not allocated in the heap (CWE-590)"
+    },
+    {
+        "args": [
+            "'{_ $var=_; free(&$var);}'"
+        ],
+        "cwes": [
+            "CWE-590"
+        ],
+        "desc": "calling free() on memory not allocated in the heap (CWE-590)"
+    },
+    {
+        "args": [
+            "'{_ $var[]; free(&$var);}'"
+        ],
+        "cwes": [
+            "CWE-590"
+        ],
+        "desc": "calling free() on memory not allocated in the heap (CWE-590)"
+    },
+    {
+        "args": [
+            "'{_ $var[]=_; free(&$var);}'"
+        ],
+        "cwes": [
+            "CWE-590"
+        ],
+        "desc": "calling free() on memory not allocated in the heap (CWE-590)"
+    },
+    {
+        "args": [
+            "'{_ *$var; free(&$var);}'"
+        ],
+        "cwes": [
+            "CWE-590"
+        ],
+        "desc": "calling free() on memory not allocated in the heap (CWE-590)"
+    },
+    {
+        "args": [
+            "'{_ *$var=_; free(&$var);}'"
+        ],
+        "cwes": [
+            "CWE-590"
+        ],
+        "desc": "calling free() on memory not allocated in the heap (CWE-590)"
+    },
+    {
+        "args": [
+            "'{$ptr=alloca(_); free($ptr);}'"
+        ],
+        "cwes": [
+            "CWE-590"
+        ],
+        "desc": "calling free() on memory not allocated in the heap (CWE-590)"
+    },
+    {
+        "args": [
+            "'{_ $ptr[]; return $ptr;}'"
+        ],
+        "cwes": [
+            "CWE-562"
+        ],
+        "desc": "returning the address of a stack-allocated variable (CWE-562)"
+    },
+    {
+        "args": [
+            "'{_ $ptr[]=_; return $ptr;}'"
+        ],
+        "cwes": [
+            "CWE-562"
+        ],
+        "desc": "returning the address of a stack-allocated variable (CWE-562)"
+    },
+    {
+        "args": [
+            "'{_ $ptr[]; $ptr2=$ptr; return $ptr2;}'"
+        ],
+        "cwes": [
+            "CWE-562"
+        ],
+        "desc": "returning the address of a stack-allocated variable (CWE-562)"
+    },
+    {
+        "args": [
+            "'{_ $ptr[]=_; $ptr2=$ptr; return $ptr2;}'"
+        ],
+        "cwes": [
+            "CWE-562"
+        ],
+        "desc": "returning the address of a stack-allocated variable (CWE-562)"
+    },
+    {
+        "args": [
+            "'{_ $var; return &$var;}'"
+        ],
+        "cwes": [
+            "CWE-562"
+        ],
+        "desc": "returning the address of a stack-allocated variable (CWE-562)"
+    },
+    {
+        "args": [
+            "'{_ $var=_; return &$var;}'"
+        ],
+        "cwes": [
+            "CWE-562"
+        ],
+        "desc": "returning the address of a stack-allocated variable (CWE-562)"
+    },
+    {
+        "args": [
+            "'{_ $var[]; return &$var;}'"
+        ],
+        "cwes": [
+            "CWE-562"
+        ],
+        "desc": "returning the address of a stack-allocated variable (CWE-562)"
+    },
+    {
+        "args": [
+            "'{_ $var[]=_; return &$var;}'"
+        ],
+        "cwes": [
+            "CWE-562"
+        ],
+        "desc": "returning the address of a stack-allocated variable (CWE-562)"
+    },
+    {
+        "args": [
+            "'{_ *$var; return &$var;}'"
+        ],
+        "cwes": [
+            "CWE-562"
+        ],
+        "desc": "returning the address of a stack-allocated variable (CWE-562)"
+    },
+    {
+        "args": [
+            "'{_ *$var=_; return &$var;}'"
+        ],
+        "cwes": [
+            "CWE-562"
+        ],
+        "desc": "returning the address of a stack-allocated variable (CWE-562)"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=allocf?$'",
+            "'{$ret=$func(); not:if(_($ret)){};}'"
+        ],
+        "cwes": [
+            "CWE-252",
+            "CWE-690"
+        ],
+        "desc": "unchecked return code of malloc(), etc. (CWE-252, CWE-690)"
+    },
+    {
+        "args": [
+            "'{_ $ptr[]; putenv($ptr);}'"
+        ],
+        "cwes": [
+            "CWE-686"
+        ],
+        "desc": "call to putenv() with a stack-allocated variable (CWE-686)"
+    },
+    {
+        "args": [
+            "'{_ $ptr[]=_; putenv($ptr);}'"
+        ],
+        "cwes": [
+            "CWE-686"
+        ],
+        "desc": "call to putenv() with a stack-allocated variable (CWE-686)"
+    },
+    {
+        "args": [
+            "'{_ $ptr[]; $ptr2=$ptr; putenv($ptr2);}'"
+        ],
+        "cwes": [
+            "CWE-686"
+        ],
+        "desc": "call to putenv() with a stack-allocated variable (CWE-686)"
+    },
+    {
+        "args": [
+            "'{_ $ptr[]=_; $ptr2=$ptr; putenv($ptr2);}'"
+        ],
+        "cwes": [
+            "CWE-686"
+        ],
+        "desc": "call to putenv() with a stack-allocated variable (CWE-686)"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=printf$'",
+            "-R",
+            "'fmt=(.*%\\w*x.*|.*%\\w*X.*|.*%\\w*p.*)'",
+            "'{$func(\"$fmt\");}'"
+        ],
+        "cwes": [
+            "CWE-200",
+            "CWE-209",
+            "CWE-497"
+        ],
+        "desc": "exposure of underlying memory addresses (CWE-200, CWE-209, CWE-497)"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=allocf?$|strdn?up$'",
+            "'{not:$ptr=$func(); free($ptr);}'"
+        ],
+        "cwes": [
+            "CWE-762"
+        ],
+        "desc": "mismatched memory management routines (CWE-762)"
+    },
+    {
+        "args": [
+            "--cpp",
+            "-R",
+            "'func=allocf?$|strn?dup$'",
+            "'{not:$ptr=$func(); free($ptr);}'"
+        ],
+        "cwes": [
+            "CWE-762"
+        ],
+        "desc": "mismatched memory management routines (CWE-762)"
+    },
+    {
+        "args": [
+            "--cpp",
+            "'{not:$ptr=new $obj; delete $ptr;}'"
+        ],
+        "cwes": [
+            "CWE-762"
+        ],
+        "desc": "mismatched memory management routines (CWE-762)"
+    },
+    {
+        "args": [
+            "'{_* $ptr; not:$ptr=_; not:_(&$ptr); $func($ptr);}'"
+        ],
+        "cwes": [
+            "CWE-457",
+            "CWE-824",
+            "CWE-908"
+        ],
+        "desc": "use of uninitialized pointers (CWE-457, CWE-824, CWE-908)"
+    },
+    {
+        "args": [
+            "'{_* $ptr; not:$ptr=_; not:_(&$ptr); _($ptr);}'"
+        ],
+        "cwes": [
+            "CWE-457",
+            "CWE-824",
+            "CWE-908"
+        ],
+        "desc": "use of uninitialized pointers (CWE-457, CWE-824, CWE-908)"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=(system|popen)$'",
+            "'{$func();}'"
+        ],
+        "cwes": [
+            "CWE-78",
+            "CWE-88",
+            "CWE-676"
+        ],
+        "desc": "call to system(), popen() (CWE-78, CWE-88, CWE-676)"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=(system|popen)$'",
+            "'{$func($arg);}'"
+        ],
+        "cwes": [
+            "CWE-78",
+            "CWE-88",
+            "CWE-676"
+        ],
+        "desc": "call to system(), popen() (CWE-78, CWE-88, CWE-676)"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=(access|l?stat)$'",
+            "'{$func();}'"
+        ],
+        "cwes": [
+            "CWE-367"
+        ],
+        "desc": "call to access(), stat(), lstat() (CWE-367)"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=(mktemp|te?mpnam)$'",
+            "'{$func();}'"
+        ],
+        "cwes": [
+            "CWE-377"
+        ],
+        "desc": "call to mktemp(), tmpnam(), tempnam() (CWE-377)"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=signal$'",
+            "'{$func();}'"
+        ],
+        "cwes": [
+            "CWE-364",
+            "CWE-479",
+            "CWE-828"
+        ],
+        "desc": "call to signal() (CWE-364, CWE-479, CWE-828)"
+    },
+    {
+        "args": [
+            "'{not:setuid(0); setuid(); setgid();}'"
+        ],
+        "cwes": [
+            "CWE-696"
+        ],
+        "desc": "privilege management functions called in the wrong order (CWE-696)"
+    },
+    {
+        "args": [
+            "'{not:seteuid(0); seteuid(); not:seteuid(0); setegid();}'"
+        ],
+        "cwes": [
+            "CWE-696"
+        ],
+        "desc": "privilege management functions called in the wrong order (CWE-696)"
+    },
+    {
+        "args": [
+            "'{not:seteuid(0); seteuid(); not:seteuid(0); setuid();}'"
+        ],
+        "cwes": [
+            "CWE-696"
+        ],
+        "desc": "privilege management functions called in the wrong order (CWE-696)"
+    },
+    {
+        "args": [
+            "'{not:seteuid(0); seteuid(); not:seteuid(0); seteuid();}'"
+        ],
+        "cwes": [
+            "CWE-696"
+        ],
+        "desc": "privilege management functions called in the wrong order (CWE-696)"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=sete?uid$'",
+            "'{strict:$func();}'"
+        ],
+        "cwes": [
+            "CWE-252"
+        ],
+        "desc": "unchecked return code of setuid(), seteuid() (CWE-252)"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=memset(_explicit)?$'",
+            "'{$func(_,_,0);}'"
+        ],
+        "cwes": [],
+        "desc": "wrong order of arguments in call to memset() "
+    },
+    {
+        "args": [
+            "-R",
+            "'func=memset(_explicit)?$'",
+            "'{$func(_,sizeof(_),_);}'"
+        ],
+        "cwes": [],
+        "desc": "wrong order of arguments in call to memset() "
+    },
+    {
+        "args": [
+            "-R",
+            "'func=s?rand$'",
+            "'{$func();}'"
+        ],
+        "cwes": [
+            "CWE-330",
+            "CWE-338"
+        ],
+        "desc": "call to rand(), srand() (CWE-330, CWE-338)"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=^sn?printf$'",
+            "'{$func($dst,_,$dst);}'"
+        ],
+        "cwes": [],
+        "desc": "source and destination overlap in sprintf(), snprintf()"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=^sn?printf$'",
+            "'{$func($dst,_,_,$dst);}'"
+        ],
+        "cwes": [],
+        "desc": "source and destination overlap in sprintf(), snprintf()"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=^sn?printf$'",
+            "'{$func($dst,_,_,_,$dst);}'"
+        ],
+        "cwes": [],
+        "desc": "source and destination overlap in sprintf(), snprintf()"
+    },
+    {
+        "args": [
+            "-R",
+            "'assert=(?i)^\\w*assert\\w*\\s*$'",
+            "'{$assert(_<_);}'"
+        ],
+        "cwes": [],
+        "desc": "size check implemented with an assertion macro"
+    },
+    {
+        "args": [
+            "-R",
+            "'assert=(?i)^\\w*assert\\w*\\s*$'",
+            "'{$assert(_<=_);}'"
+        ],
+        "cwes": [],
+        "desc": "size check implemented with an assertion macro"
+    },
+    {
+        "args": [
+            "-R",
+            "'assert=(?i)^\\w*assert\\w*\\s*$'",
+            "'{$assert(_>_);}'"
+        ],
+        "cwes": [],
+        "desc": "size check implemented with an assertion macro"
+    },
+    {
+        "args": [
+            "-R",
+            "'assert=(?i)^\\w*assert\\w*\\s*$'",
+            "'{$assert(_>=_);}'"
+        ],
+        "cwes": [],
+        "desc": "size check implemented with an assertion macro"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=scanf$'",
+            "'{strict:$func();}'"
+        ],
+        "cwes": [
+            "CWE-252"
+        ],
+        "desc": "unchecked return code of scanf(), etc. (CWE-252)"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=ato(i|ll?|f)$'",
+            "'{$func();}'"
+        ],
+        "cwes": [],
+        "desc": "call to atoi(), atol(), atof(), atoll()"
+    },
+    {
+        "args": [
+            "-R",
+            "'var=argv|envp'",
+            "'{$var[_];}'"
+        ],
+        "cwes": [],
+        "desc": "command-line argument or environment variable access"
+    },
+    {
+        "args": [
+            "-l",
+            "'switch(_) {_; not:default:_; _;}'"
+        ],
+        "cwes": [
+            "CWE-478"
+        ],
+        "desc": "missing default case in a switch construct (CWE-478)"
+    },
+    {
+        "args": [
+            "-l",
+            "'switch(_) {case _: not:break; not:exit; not:return; not:goto _; case _:_;}'"
+        ],
+        "cwes": [
+            "CWE-484"
+        ],
+        "desc": "missing break or equivalent statement in a switch construct (CWE-484)"
+    },
+    {
+        "args": [
+            "-R",
+            "'type!=void'",
+            "'$type $func(_) {_; not:return;}'"
+        ],
+        "cwes": [
+            "CWE-393",
+            "CWE-394"
+        ],
+        "desc": "missing return statement in a non-void function (CWE-393, CWE-394)"
+    },
+    {
+        "args": [
+            "'{for (_==_;_;_) {}}'"
+        ],
+        "cwes": [
+            "CWE-480",
+            "CWE-481",
+            "CWE-482",
+            "CWE-483"
+        ],
+        "desc": "typos with security implications (CWE-480, CWE-481, CWE-482, CWE-483)"
+    },
+    {
+        "args": [
+            "'if (_=_) {}'"
+        ],
+        "cwes": [
+            "CWE-480",
+            "CWE-481",
+            "CWE-482",
+            "CWE-483"
+        ],
+        "desc": "typos with security implications (CWE-480, CWE-481, CWE-482, CWE-483)"
+    },
+    {
+        "args": [
+            "'if (_&_) {}'"
+        ],
+        "cwes": [
+            "CWE-480",
+            "CWE-481",
+            "CWE-482",
+            "CWE-483"
+        ],
+        "desc": "typos with security implications (CWE-480, CWE-481, CWE-482, CWE-483)"
+    },
+    {
+        "args": [
+            "'if (_|_) {}'"
+        ],
+        "cwes": [
+            "CWE-480",
+            "CWE-481",
+            "CWE-482",
+            "CWE-483"
+        ],
+        "desc": "typos with security implications (CWE-480, CWE-481, CWE-482, CWE-483)"
+    },
+    {
+        "args": [
+            "'{_=+_;}'"
+        ],
+        "cwes": [
+            "CWE-480",
+            "CWE-481",
+            "CWE-482",
+            "CWE-483"
+        ],
+        "desc": "typos with security implications (CWE-480, CWE-481, CWE-482, CWE-483)"
+    },
+    {
+        "args": [
+            "'{_=-_;}'"
+        ],
+        "cwes": [
+            "CWE-480",
+            "CWE-481",
+            "CWE-482",
+            "CWE-483"
+        ],
+        "desc": "typos with security implications (CWE-480, CWE-481, CWE-482, CWE-483)"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=strn?cpy$'",
+            "'if ($func()==_) {}'"
+        ],
+        "cwes": [
+            "CWE-480",
+            "CWE-481",
+            "CWE-482",
+            "CWE-483"
+        ],
+        "desc": "typos with security implications (CWE-480, CWE-481, CWE-482, CWE-483)"
+    },
+    {
+        "args": [
+            "-R",
+            "'pattern=(?i)(unsafe|insecure|dangerous|warning|overflow)'",
+            "'$pattern'"
+        ],
+        "cwes": [],
+        "desc": "keywords that suggest the presence of bugs"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=(?i)(encode|decode|convert|interpret|compress|fragment|reassemble)'",
+            "'_ $func(_) {}'"
+        ],
+        "cwes": [],
+        "desc": "keywords that suggest the presence of bugs"
+    },
+    {
+        "args": [
+            "-R",
+            "'func=(?i)(mutex|lock|toctou|parallelism|semaphore|retain|release|garbage|mutual)'",
+            "'_ $func(_) {}'"
+        ],
+        "cwes": [],
+        "desc": "keywords that suggest the presence of bugs"
+    }
+]

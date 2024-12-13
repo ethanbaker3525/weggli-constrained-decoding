@@ -7,7 +7,7 @@ def test(a):
     return False
     #return "J" in a
 
-def weggli(query: str, source_code: str) -> str:
+def weggli(query, source_code: str) -> str:
 
     try:
         # Write the source code to a temporary file with a recognized C++ extension
@@ -16,7 +16,8 @@ def weggli(query: str, source_code: str) -> str:
             source_file_path = os.path.abspath(source_file.name)
 
         # Use STDIN to provide the filename to Weggli
-        command = ["weggli", "--cpp", query, "-"]
+        command = "weggli " + " ".join(query) + " -"
+        #print(command)
         
         result = subprocess.run(
             command,
@@ -24,6 +25,7 @@ def weggli(query: str, source_code: str) -> str:
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
+            shell=True
         )
 
         if result.returncode != 0:
@@ -35,10 +37,24 @@ def weggli(query: str, source_code: str) -> str:
         if 'source_file_path' in locals() and os.path.exists(source_file_path):
             os.unlink(source_file_path)
 
+def multi_weggli(queries, source_code: str) -> str:
+    return [weggli(query, source_code) for query in queries]
+    
+
+
 def weggli_query_constraint(q):
     def f(src):
         print(src)
         return weggli(q, src) != ""
+    return f
+
+def weggli_queries_constraint(qs):
+    def f(src):
+        print(src)
+        for q in qs:
+            if weggli(q, src) != "":
+                return True
+        return False
     return f
 
 if __name__ == "__main__":
